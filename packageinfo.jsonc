@@ -1,0 +1,39 @@
+{
+	"magic": {
+		"magic": "packageinfo",
+		"version": 2
+	},
+	"meta": {
+		"authors": [
+			{
+				"email": "pubsrc@binary-overflow.de",
+				"name": "J\u00fcrgen Knauth"
+			}
+		],
+		"description": "A collection of regex helper functions.",
+		"development_status": "stable",
+		"keywords": [
+			"regex",
+		],
+		"language": "python3",
+		"license": "Apache2",
+		"name": "jk_regexhelper",
+		"packageClass": "python-module",
+		"version": "0.2025.1.7"
+	},
+	"requirements": {
+		"htmlcssjs_packages": [],
+		"python_packages": [
+		],
+		"python_packages_dev": [],
+		"python_packages_recommended": [],
+		"system_apt_packages": []
+	},
+	"source": {
+		"extra_binary_files": [],
+		"extra_data_files": [],
+		"packages": [
+			"jk_regexhelper",
+		]
+	}
+}
