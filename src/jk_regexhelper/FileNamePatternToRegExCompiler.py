@@ -31,9 +31,11 @@ class FileNamePatternToRegExCompiler(object):
 	################################################################################################################################
 
 	@staticmethod
-	def __compileFileNamePatternToRegExStr_part(fileNamePattern:str, ret:typing.List[str]):
+	def __compileFileNamePatternToRegExStr_part(fileNamePattern:str) -> str:
 		assert isinstance(fileNamePattern, str)
 		assert fileNamePattern
+
+		ret = []
 
 		for c in fileNamePattern:
 			if c == "?":
@@ -42,6 +44,8 @@ class FileNamePatternToRegExCompiler(object):
 				ret.append(".*")
 			else:
 				ret.append(re.escape(c))
+
+		return "".join(ret)
 	#
 
 	################################################################################################################################
@@ -52,35 +56,54 @@ class FileNamePatternToRegExCompiler(object):
 	## Public Static Methods
 	################################################################################################################################
 
+	#
+	# This method will first invoke <c>compileToRegExStr(..)</c> and then compile the regex string to an instance of <c>re.Pattern</c>.
+	#
 	@staticmethod
 	def compileToRegEx(fileNamePattern:typing.Union[str,typing.List[str],typing.Tuple[str],typing.Set[str],typing.FrozenSet[str]]) -> re.Pattern:
 		return re.compile(FileNamePatternToRegExCompiler.compileToRegExStr(fileNamePattern))
 	#
 
+	#
+	# This method will first invoke <c>compileToRegExStrList(..)</c> and then join all fragments using '(..)|(..)'.
+	# Therefore this method will group every fragment (thus introducing new unnamed regex groups).
+	#
 	@staticmethod
 	def compileToRegExStr(fileNamePattern:typing.Union[str,typing.List[str],typing.Tuple[str],typing.Set[str],typing.FrozenSet[str]]) -> str:
+		ret = []
+
+		singles = FileNamePatternToRegExCompiler.compileToRegExStrList(fileNamePattern)
+		for i,s in enumerate(singles):
+			if i > 0:
+				ret.append("|")
+			ret.append("(")
+			ret.append(s)
+			ret.append(")")
+
+		return "".join(ret)
+	#
+
+	#
+	# @return		Returns a list of regex fragments. For use concat those fragments using '(..)|(..)'.
+	#
+	@staticmethod
+	def compileToRegExStrList(fileNamePattern:typing.Union[str,typing.List[str],typing.Tuple[str],typing.Set[str],typing.FrozenSet[str]]) -> typing.List[str]:
 		assert isinstance(fileNamePattern, (str,list,tuple,set,frozenset))
 
-		ret = [ "^" ]
+		ret = []
 
 		if isinstance(fileNamePattern, str):
 			if "|" in fileNamePattern:
 				fileNamePattern = fileNamePattern.split("|")
 
 		if isinstance(fileNamePattern, str):
-			FileNamePatternToRegExCompiler.__compileFileNamePatternToRegExStr_part(fileNamePattern, ret)
+			ret.append(FileNamePatternToRegExCompiler.__compileFileNamePatternToRegExStr_part(fileNamePattern))
 		else:
 			assert isinstance(fileNamePattern, (list,tuple,set,frozenset))
-			for i,s in enumerate(fileNamePattern):
-				if i > 0:
-					ret.append("|")
-				ret.append("(")
-				FileNamePatternToRegExCompiler.__compileFileNamePatternToRegExStr_part(s, ret)
-				ret.append(")")
+			for s in fileNamePattern:
+				ret.append(FileNamePatternToRegExCompiler.__compileFileNamePatternToRegExStr_part(s))
 
-		ret.append("$")
-
-		return "".join(ret)
+		return ret
 	#
 
 #

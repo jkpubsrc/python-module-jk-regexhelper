@@ -19,7 +19,7 @@
 		"license": "Apache2",
 		"name": "jk_regexhelper",
 		"packageClass": "python-module",
-		"version": "0.2025.1.7"
+		"version": "0.2025.1.7.2"
 	},
 	"requirements": {
 		"htmlcssjs_packages": [],
